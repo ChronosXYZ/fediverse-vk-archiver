@@ -37,8 +37,10 @@ group_last_post_count = last_post_count_table.find_one(group=args.group)
 
 posts_raw = {}
 if group_last_post_count == None:
+    # download full wall
     posts_raw = tools.get_all('wall.get', 100, {'domain': args.group})
 else:
+    # download only neccessary posts from vk
     posts_raw["items"] = []
     last_post_count = group_last_post_count["count"]
     p_tmp = vk.wall.get(domain=args.group, count=1)
@@ -51,6 +53,7 @@ else:
     download_count = current_count - last_post_count
     download_offset = 0
     if has_pinned_post:
+        # skip pinned post, cuz it appears first in the list
         download_offset += 1
     while download_count > 0:
         to_download = 0
@@ -77,6 +80,7 @@ for p in posts:
     parsed_post["attachments"] = []
     for a in attachments:
         if a["type"] == "photo":
+            # get the biggest resolution of the photo
             a["photo"]["sizes"].sort(key=lambda e: e["height"], reverse=True)
             parsed_post["attachments"].append(a["photo"]["sizes"][0]["url"])
     parsed_posts.append(parsed_post)
