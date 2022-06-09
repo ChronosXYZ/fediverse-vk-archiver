@@ -1,0 +1,6 @@
+[vk]
+access_token = "***"
+
+[mastodon]
+instance = "https://mastodon.ml"
+access_token = "***"

@@ -1,0 +1,5 @@
+.config.toml
+.vscode
+.mypy_cache
+__pycache__
+*.db
