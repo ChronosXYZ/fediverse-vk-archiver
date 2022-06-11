@@ -65,7 +65,7 @@ else:
             download_count -= 100
             download_offset += 100
         posts_raw_tmp = vk.wall.get(domain=args.group, offset=download_offset, count=to_download)
-        posts_raw["items"].append(*posts_raw_tmp["items"])
+        posts_raw["items"].extend(posts_raw_tmp["items"])
         last_post_count += len(posts_raw_tmp["items"])
 posts = posts_raw["items"]
 for p in posts:
