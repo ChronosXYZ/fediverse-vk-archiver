@@ -1,24 +1,26 @@
-import asyncio
-from turtle import down
-import vk_api
 import argparse
-from mastodon import Mastodon
+import sys
+
+import dataset
 import requests
 import toml
-import pathlib
-import sys
-import dataset
+import vk_api
+from mastodon import Mastodon
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--config", help="Config path")
-parser.add_argument("-g", "--group", help="VK group domain")
+parser.add_argument("-g", "--group", help="VK group to archive")
 args = parser.parse_args()
 
 config = toml.load(args.config)
 
+if config["mastodon"].get(args.group) is None:
+    print("invalid group")
+    sys.exit(1)
+
 mastodon = Mastodon(
-    access_token = config["mastodon"]["access_token"],
-    api_base_url = config["mastodon"]["instance"]
+    access_token=config["mastodon"][args.group]["access_token"],
+    api_base_url=config["mastodon"][args.group]["instance"]
 )
 
 vk_session = vk_api.VkApi(token=config["vk"]["access_token"])
@@ -57,7 +59,7 @@ else:
         download_offset += 1
     while download_count > 0:
         to_download = 0
-        if download_count-100 < 0: 
+        if download_count - 100 < 0:
             to_download = download_count
             download_count = 0
         else:

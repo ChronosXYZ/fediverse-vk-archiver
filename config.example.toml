@@ -1,6 +1,6 @@
 [vk]
 access_token = "***"
 
-[mastodon]
-instance = "https://mastodon.ml"
+[mastodon.group_name]
+instance = "https://mastodon.social"
 access_token = "***"
