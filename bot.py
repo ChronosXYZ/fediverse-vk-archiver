@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import queue
+import sys
 import threading
 import time
 
@@ -14,7 +15,12 @@ import utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--config", help="Config path")
+parser.add_argument("-i", "--interval", type=int, help="Polling interval", required=True)
 args = parser.parse_args()
+
+if args.interval <= 0:
+    print("interval must be greater than 0")
+    sys.exit(0)
 
 config = toml.load(args.config)
 
@@ -22,7 +28,6 @@ vk_session = vk_api.VkApi(token=config["vk"]["access_token"])
 vk = vk_session.get_api()
 
 mastodon_clients = {}
-bots_longpoll = {}
 bot_threads = {}
 q = queue.Queue()
 
@@ -102,7 +107,7 @@ print("Bot has been set up, listening events...")
 while True:
     try:
         asyncio.run(listen_new_posts())
-        time.sleep(5)
+        time.sleep(args.interval)
     except KeyboardInterrupt:
         db.close()
         break
