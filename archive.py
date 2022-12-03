@@ -11,8 +11,8 @@ from mastodon import Mastodon
 import utils
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-c", "--config", help="Config path")
-parser.add_argument("-g", "--group", help="VK group to archive")
+parser.add_argument("-c", "--config", help="Config path", required=True)
+parser.add_argument("-g", "--group", help="VK group to archive", required=True)
 args = parser.parse_args()
 
 config = toml.load(args.config)
@@ -47,7 +47,7 @@ if group_last_post_count is None:
 else:
     # download only necessary posts from vk
     last_post_count = group_last_post_count["count"]
-    posts_raw["items"] = asyncio.run(utils.download_posts_incrementally(vk, args.group, last_post_count))
+    posts_raw = asyncio.run(utils.download_posts_incrementally(vk, args.group, last_post_count))
 posts = posts_raw["items"]
 for p in posts:
     if uploaded_posts.find_one(group=args.group, post_id=p["id"]) is not None:
